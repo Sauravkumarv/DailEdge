@@ -8,12 +8,25 @@ const Protected = ({ children }) => {
 
   useEffect(() => {
     const decodedUser = getUserFromToken();
-
     if (decodedUser) setUser(decodedUser);
     setLoading(false);
   }, []);
 
-  if (loading) return <h3>Loading...</h3>;
+  if (loading)
+  return (
+    <h3
+      style={{
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        height: "100vh",
+        fontSize: "1.5rem",
+        color:  "#333",
+      }}
+    >
+      Loading...
+    </h3>
+  );
   if (!user) return <Navigate to="/signin" />;
 
   return React.isValidElement(children)
