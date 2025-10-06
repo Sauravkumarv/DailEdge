@@ -16,8 +16,9 @@ import PastIssues from "./src/components/PastIssues";
 import Loader from "./src/components/Loader";
 
 import Header from "./src/components/Header";
+ 
 
-const DailyEdge = () => {
+const DailyEdge = ({user }) => {
   const [darkMode, setDarkMode] = useState(false);
   const [email, setEmail] = useState("");
   const [subscribed, setSubscribed] = useState(false);
@@ -32,6 +33,7 @@ const DailyEdge = () => {
   const theme = darkMode ? COLORS.dark : COLORS.light;
 
   useEffect(() => {
+    
     const handleScroll = () => {
       const windowHeight = window.innerHeight;
       const documentHeight =
@@ -105,6 +107,7 @@ const DailyEdge = () => {
           '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
       }}
     >
+
       {loading && <Loader theme={theme} />}
       {!loading && (
         <>
@@ -115,6 +118,7 @@ const DailyEdge = () => {
             theme={theme}
             loading={loading}
             readingProgress={readingProgress}
+            user={user}
           />
           <HeroSection
             email={email}

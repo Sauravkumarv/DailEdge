@@ -1,4 +1,6 @@
 const USER = require("../model/registerUser");
+const dotenv=require('dotenv')
+dotenv.config();
 
 
 const { generateAccessToken,generateRefreshToken } = require("../utils/generateToken");
@@ -22,8 +24,6 @@ return res.status(201).json({success:true,message:"Registered Successfully",newU
 const Login=async(req,res)=>{
  try {
   const {email,password,role}=req.body;
-
-
   const user=await USER.findOne({email})
   if(!user) return res.status(401).json({success:false,message:"User not Found"})
   
@@ -60,6 +60,8 @@ const Logout=(req,res)=>{
     return res.status(500).json({ message: "Logout Failed", error: error.message });
   }
 }
+
+
 
 
 

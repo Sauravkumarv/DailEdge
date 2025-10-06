@@ -1,7 +1,8 @@
 const jwt=require('jsonwebtoken')
+const dotenv=require('dotenv')
+dotenv.config();
 
-
-const secretKey="Rahufht444#43%5467"
+const secretKey=process.env.SECRET_KEY;
 
 
 const protect=(req,res,next)=>{

@@ -5,6 +5,7 @@ import { FcGoogle } from 'react-icons/fc';
 import Logo from '../common/Logo';
 import axios from 'axios';
 import { toast } from 'react-toastify';
+import { useNavigate } from 'react-router-dom';
 
 const INPUT_STYLE = {
   width: '100%',
@@ -47,6 +48,8 @@ export default function SignInPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
 
+const navigate=useNavigate();
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
@@ -63,11 +66,16 @@ export default function SignInPage() {
         `${import.meta.env.VITE_SIGNUP_API}/login`,
         { email, password },
         { withCredentials: true }
+        
       );
+      
+      localStorage.setItem("accessToken",res.data.accessToken)
+
       
       setEmail('');
       setPassword('');
       toast.success("Logged In Successful")
+      navigate('/')
     } catch (err) {
       const errorMsg = err.response?.data?.message || err.message || 'Login failed';
       setError(errorMsg);

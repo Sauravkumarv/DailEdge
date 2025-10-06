@@ -3,6 +3,7 @@ import { Mail, Lock, Eye, EyeOff, User } from 'lucide-react';
 import axios from 'axios';
 import Logo from '../common/Logo';
 import { toast } from 'react-toastify';
+import { useNavigate } from 'react-router-dom';
 
 // Constants
 const THEME = {
@@ -72,6 +73,8 @@ export default function SignUpPage() {
   const [error, setError] = useState('');
   const [agreedToTerms, setAgreedToTerms] = useState(false);
 
+const navigate=useNavigate();
+
   const handleInputChange = (field) => (e) => {
     setFormData(prev => ({ ...prev, [field]: e.target.value }));
     setError('');
@@ -114,8 +117,10 @@ export default function SignUpPage() {
 
       
      toast.success( 'Account created successfully!');
+     navigate('/signin')
       setFormData({ fullName: '', email: '', password: '', confirmPassword: '' });
       setAgreedToTerms(false);
+
     } catch (err) {
       setError(
         err.response?.data?.message || 

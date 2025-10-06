@@ -7,9 +7,11 @@ const router=express.Router();
 router.post('/signup',RegisterUser)
 router.post('/login',Login)
 
+
 router.get('/profile',protect,(req,res)=>{
   res.json({ message: "Welcome", user: req.user });
 })
+
 
 router.get('/admin',protect,authorizeRoles("admin"),(req,res)=>{
   res.send("Welcome Admin")

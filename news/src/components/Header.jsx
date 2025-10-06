@@ -1,18 +1,25 @@
   import React, { useState, useEffect, useRef, memo, useCallback } from "react";
-  import { Zap, Sun, Moon, Menu, X, ChevronRight,LogIn,UserRound,LogOut } from "lucide-react";
+  import { Zap, Sun, Moon, Menu, X, ChevronRight,ChevronDown,LogIn,UserRound,LogOut } from "lucide-react";
  import { NavLink } from "react-router-dom";
 
 
 
   const Header = memo(
-    ({ darkMode, onToggleDarkMode, isScrolled, theme, loading  }) => {
+    ({ darkMode, onToggleDarkMode, isScrolled, theme, loading, user  }) => {
       const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
       const [headerBg, setHeaderBg] = useState("transparent");
       const [activeSection, setActiveSection] = useState("home");
       const [isTransitioning, setIsTransitioning] = useState(false);
       const [isLoggedIn, setIsLoggedIn] = useState(false);
+      const [dropdownOpen, setDropdownOpen] = useState(false);
+
 
       const headerRef = useRef(null);
+
+
+      useEffect(() => {
+        setIsLoggedIn(!!user); // true if user exists
+      }, [user]);
 
       useEffect(() => {
         if (isScrolled) {
@@ -409,6 +416,12 @@
             }
           }
 
+          @media (max-width: 480px) {
+            .user-name-text {
+              display: none !important;
+            }
+          }
+
           html {
             scroll-behavior: smooth;
           }
@@ -472,38 +485,111 @@
                   >
                     Subscribe
                   </ScrollLink>
-                  {isLoggedIn ? (
-  <>
-    <NavLink
-      to="/profile"
+                 {/* ✅ Auth section */}
+{isLoggedIn ? (
+  <div style={{ position: "relative" }}>
+    <button
+      onClick={() => setDropdownOpen((prev) => !prev)}
       style={{
         display: "flex",
         alignItems: "center",
-        gap: "0.25rem",
-        color: theme.textSecondary,
-        transition: "all 0.3s ease",
-      }}
-      onMouseEnter={(e) => (e.currentTarget.style.color = theme.primary)}
-      onMouseLeave={(e) => (e.currentTarget.style.color = theme.textSecondary)}
-    >
-      <UserRound size={22} />
-    </NavLink>
-
-    <button
-      onClick={() => setIsLoggedIn(false)}
-      style={{
+        gap: "0.5rem",
         background: "transparent",
         border: "none",
         cursor: "pointer",
-        color: theme.textSecondary,
-        transition: "all 0.3s ease",
+        color: theme.text,
       }}
-      onMouseEnter={(e) => (e.currentTarget.style.color = theme.primary)}
-      onMouseLeave={(e) => (e.currentTarget.style.color = theme.textSecondary)}
     >
-      <LogOut size={22} />
+      {/* Avatar */}
+      <div
+  style={{
+    display: "flex",
+    alignItems: "center", // vertically center avatar and name
+    gap: "8px",           // space between avatar and name
+    cursor: "pointer",
+  }}
+>
+  {/* Avatar */}
+  <div
+    style={{
+      width: "25px",
+      height: "25px",
+      borderRadius: "50%",
+      backgroundColor: "#666", // fallback color
+      color: "#fff",
+      fontWeight: "bold",
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      textTransform: "uppercase",
+      fontSize: "1rem",
+    }}
+  >
+    {user?.name ? user.name.charAt(0) : <UserRound size={18} />}
+  </div>
+
+  {/* Name + Arrow */}
+  <div style={{ display: "flex", alignItems: "center", gap: "4px", fontWeight: 600, margin:"15px  "}}>
+    <span>{user?.name || "User"}</span>
+    <ChevronDown
+  size={18}
+  style={{
+    transform: dropdownOpen ? "rotate(180deg)" : "rotate(0deg)",
+    transition: "transform 0.3s ease",
+  }}
+/>
+  </div>
+</div>
     </button>
-  </>
+
+    {/* Dropdown */}
+    {dropdownOpen && (
+      <div
+      style={{
+        position: "absolute",
+        top: "100%",
+        left: 0,
+        backgroundColor: theme.cardBg,
+        border: `1px solid ${theme.border}`,
+        borderRadius: "8px",
+        boxShadow: "0 4px 12px rgba(0,0,0,0.15)",
+        padding: "0.5rem 0",
+        minWidth: "140px",
+        zIndex: 1001,
+      }}
+    >
+        <button
+          onClick={() => {
+            localStorage.removeItem("accessToken");
+            setIsLoggedIn(false);
+            window.location.href = "/signin";
+          }}
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: "0.5rem",
+            width: "100%",
+            background: "transparent",
+            border: "none",
+            cursor: "pointer",
+            padding: "0.5rem 1rem",
+            color: theme.textSecondary,
+            transition: "all 0.2s ease",
+          }}
+          onMouseEnter={(e) =>
+            (e.currentTarget.style.backgroundColor =
+              darkMode ? "#222" : "#f2f2f2")
+          }
+          onMouseLeave={(e) =>
+            (e.currentTarget.style.backgroundColor = "transparent")
+          }
+        >
+          <LogOut size={18} />
+          Logout
+        </button>
+      </div>
+    )}
+  </div>
 ) : (
   <NavLink
     to="/signin"
@@ -520,6 +606,7 @@
     <LogIn size={22} />
   </NavLink>
 )}
+
 
                 </div>
                 {/* <LanguageSelector/> */}
